@@ -1,0 +1,108 @@
+#name: Divyansh Kachchhava
+#utorid: kachchha
+#student_number: 1008378462
+
+    .main
+    .global main
+    
+main:
+    # Initialize the coefficients a, b, and c in $t5, $t6, and $t7 respectively
+    addi $t5, $zero, 1 # seeting a = 1 at $t5
+    addi $t6, $zero, 10 # setting b = 4 at $t6
+    addi $t7, $zero, 100 # setting c = 4 at $t7
+    
+    # Print the values of a, b, and c with messages
+    #Note: $vo will be used several times beacuase reloading is allowed
+    li $v0, 4        # load system call code for printing strings
+
+    la $a0, vala    # load address of message for a into $a0
+    syscall          # print the message
+    li $v0, 1        # load system call code for printing integers
+    move $a0, $t5    # move value of a into $a0
+    syscall          # print the value of a
+    li $v0, 4        # load system call code for printing strings
+    la $a0, nl       # load address of newline character into $a0
+    syscall          # print newline
+
+    li $v0, 4        # load system call code for printing strings
+    la $a0, valb    # load address of message for b into $a0
+    syscall          # print the message
+    li $v0, 1        # load system call code for printing integers
+    move $a0, $t6    # move value of b into $a0
+    syscall          # print the value of b
+    li $v0, 4        # load system call code for printing strings
+    la $a0, nl       # load address of newline character into $a0
+    syscall          # print newline
+
+    li $v0, 4        # load system call code for printing strings
+    la $a0, valc    # load address of message for c into $a0
+    syscall          # print the message
+    li $v0, 1        # load system call code for printing integers
+    move $a0, $t7    # move value of c into $a0
+    syscall          # print the value of c
+    li $v0, 4        # load system call code for printing strings
+    la $a0, nl       # load address of newline character into $a0
+    syscall          # print newline
+
+    # Calculate the discriminant delta
+    mul $t8, $t6, $t6   # t8 = b^2
+    mul $t9, $t5, $t7   # t9 = ac
+    sll $t9, $t9, 2     # t9 = 4ac
+    sub $t0, $t8, $t9   # t0 = b^2 - 4ac
+	
+    # Print the value of delta with a message
+    li $v0, 4         # Load the print string syscall code into $v0
+    la $a0, delta_msg # Load the address of the delta message into $a0
+    syscall           # Print the delta message
+
+    li $v0, 1         # Load the print integer syscall code into $v0
+    move $a0, $t0     # Move the value of delta into $a0
+    syscall           # Print the value of delta
+
+    li $v0, 4         # Load the print string syscall code into $v0
+    la $a0, nl        # Load the address of the newline character into $a0
+    syscall           # Print newline
+
+    # Check the number of solutions
+    beqz $t0, one_solution # If delta = 0, there is one solution
+    bgez $t0, two_solutions # If delta >= 0, there are two solutions
+    j no_solutions # If delta < 0, there are no solutions
+
+# It's a function which prints two solutions are possible
+two_solutions:
+    li $v0, 4        # Load the print string syscall code into $v0
+    la $a0, two_sol  # Load the address of the "two solutions" string into $a0
+    syscall          # Print the "two solutions" string
+    j end_program    # End of program
+
+# It's a function which prints only one solution is possible
+one_solution:
+    li $v0, 4        # Load the print string syscall code into $v0
+    la $a0, one_sol  # Load the address of the "one solution" string into $a0
+    syscall          # Print the "one solution" string
+    j end_program    # End of program
+
+# It's a function which prints no solutions are possible
+no_solutions:
+    li $v0, 4        # Load the print string syscall code into $v0
+    la $a0, zero_sol # Load the address of the "zero solutions" string into $a0
+    syscall          # Print the "zero solutions" string
+    j end_program    # End of program
+
+# End of program
+end_program:
+
+# Data section
+#It's used for printing the details for each step
+.data
+    two_sol: .asciiz "There are Two solutions for the equation :)\n"
+    quad_eq_msg: .asciiz "The quadratic equation is: "
+    one_sol: .asciiz "There is only one solution for the equation :|\n"
+    zero_sol: .asciiz "There is no solution for the equation :(\n"
+    delta_msg: .asciiz "The value of delta (b^2 - 4ac) is: "
+    vala: .asciiz "The value of a is: "
+    valb: .asciiz "The value of b is: "
+    valc: .asciiz "The value of c is: "
+    nl: .asciiz "\n" # newline character
+
+
